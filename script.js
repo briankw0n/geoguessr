@@ -80,7 +80,9 @@ function startCountryGame() {
   const guessInput = document.getElementById("guessInput");
   guessInput.value = "";
   guessInput.disabled = false;
-  guessInput.focus();
+  if (!isMobile()) {
+    guessInput.focus();
+  }
 }
 
 function startCapitalGame() {
@@ -108,7 +110,9 @@ function startCapitalGame() {
   const guessInput = document.getElementById("guessInput");
   guessInput.value = "";
   guessInput.disabled = false;
-  guessInput.focus();
+  if (!isMobile()) {
+    guessInput.focus();
+  }
 }
 
 function startFlagGame() {
@@ -140,7 +144,13 @@ function startFlagGame() {
   const guessInput = document.getElementById("guessInput");
   guessInput.value = "";
   guessInput.disabled = false;
-  guessInput.focus();
+  if (!isMobile()) {
+    guessInput.focus();
+  }
+}
+
+function isMobile() {
+  return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
 document.getElementById("guessInput").addEventListener("keydown", (e) => {
