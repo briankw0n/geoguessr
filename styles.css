@@ -206,6 +206,10 @@ body {
     padding: 12px 0;
   }
 
+  .country-mode #prompt {
+    padding-top: -2rem;
+  }
+
   .capital-mode #prompt {
     padding-top: 6rem;
   }
