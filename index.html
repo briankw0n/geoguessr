@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Guess the Country on Map</title>
+    <title>Guess the Country Game</title>
 
     <link
       rel="stylesheet"
@@ -13,20 +13,45 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div id="menu">
+      <h1>GeoGuessr</h1>
+      <button class="menu-btn" id="modeCountry">Country</button>
+      <button class="menu-btn" id="modeCapital">Capital</button>
+      <button class="menu-btn" id="modeFlag">Flag</button>
+    </div>
+
     <div id="app">
+      <div id="prompt"></div>
+
       <div id="map"></div>
-      <input
-        type="text"
-        id="guessInput"
-        placeholder="Type your guess here"
-        autocomplete="off"
+
+      <img
+        id="flagImg"
+        style="
+          display: none;
+          max-width: 320px;
+          margin-bottom: 12px;
+          border: 2px solid #444;
+          border-radius: 8px;
+        "
+        alt="Country flag"
       />
+
+      <div id="inputContainer">
+        <input
+          type="text"
+          id="guessInput"
+          placeholder="Type your guess here"
+          autocomplete="off"
+        />
+        <button id="refreshBtn">Refresh</button>
+        <button id="backBtn">Back</button>
+      </div>
+
       <div id="result"></div>
-      <button id="newBtn" style="display: none">New Country</button>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script src="script.js"></script>
   </body>
 </html>
