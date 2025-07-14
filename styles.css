@@ -207,7 +207,7 @@ body {
   }
 
   .country-mode #prompt {
-    padding-top: -2rem;
+    margin-top: -2rem;
   }
 
   .capital-mode #prompt {
