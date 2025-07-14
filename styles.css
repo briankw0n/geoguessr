@@ -207,12 +207,11 @@ body {
   }
 
   .capital-mode #prompt {
-    padding-top: 10rem;
+    padding-top: 8rem;
   }
 
   #prompt {
     font-size: 1.2rem;
-    padding-top: 5rem;
   }
 
   #inputContainer {
