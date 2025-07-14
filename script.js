@@ -62,6 +62,7 @@ function highlightCountry(feature) {
 }
 
 function startCountryGame() {
+  document.body.classList.add("country-mode");
   document.body.classList.remove("capital-mode");
 
   const features = countriesData.features;
@@ -88,6 +89,9 @@ function startCountryGame() {
 }
 
 function startCapitalGame() {
+  document.body.classList.add("capital-mode");
+  document.body.classList.remove("country-mode");
+
   if (!capitalData || capitalData.length === 0) {
     alert("Capital data is unavailable.");
     return;
@@ -106,8 +110,6 @@ function startCapitalGame() {
   const promptEl = document.getElementById("prompt");
   promptEl.textContent = `What is the capital of ${currentCountry}?`;
 
-  document.body.classList.add("capital-mode");
-
   const resultEl = document.getElementById("result");
   resultEl.textContent = "";
 
@@ -120,6 +122,7 @@ function startCapitalGame() {
 }
 
 function startFlagGame() {
+  document.body.classList.remove("country-mode");
   document.body.classList.remove("capital-mode");
 
   if (!flagData || flagData.length === 0) {
