@@ -180,8 +180,9 @@ body {
 @media (max-width: 480px) {
   html,
   body {
-    height: 100vh;
+    height: 100%;
     margin: 0;
+    overflow-y: auto;
   }
 
   body {
