@@ -63,6 +63,7 @@ body {
   margin-top: 1.25rem;
   padding: 0 0.5rem;
   box-sizing: border-box;
+  padding-top: 1rem;
 }
 
 #map {
@@ -175,6 +176,18 @@ body {
   box-shadow: none;
 }
 
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-size: 24px;
+  vertical-align: middle;
+  color: #eee;
+  margin-right: 6px;
+}
+
+.mobile-icon {
+  display: none;
+}
+
 @media (max-width: 1280px) {
   body {
     padding-bottom: 3rem;
@@ -190,8 +203,14 @@ body {
     height: 350px;
   }
 
-   #flagImg {
+  #flagImg {
+    height: auto;
     max-height: 200px;
+    max-width: 100%;
+    border: 2px solid #444;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    display: none;
   }
 }
 
@@ -211,10 +230,6 @@ body {
     min-height: 100%;
   }
 
-  #map {
-    height: 250px;
-  }
-
   #menu h1 {
     font-size: 2rem;
   }
@@ -222,6 +237,22 @@ body {
   .menu-btn {
     font-size: 1.2rem;
     padding: 12px 0;
+    width: 80%;
+  }
+
+  #map {
+    height: 250px;
+    width: 350px;
+  }
+
+  #flagImg {
+    height: auto;
+    max-height: 150px;
+    max-width: 300px;
+    border: 2px solid #444;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    display: none;
   }
 
   .country-mode #prompt {
@@ -234,26 +265,33 @@ body {
 
   #prompt {
     font-size: 1.2rem;
+    width: 400px;
   }
 
   #inputContainer {
     flex-wrap: nowrap;
     gap: 8px;
+    width: 300px;
   }
 
   #inputContainer button {
     flex: 0 0 auto;
-    min-width: 70px;
+    min-width: 50px;
     padding: 8px 12px;
     font-size: 0.9rem;
   }
 
   #guessInput {
     font-size: 1rem;
-    height: 36px;
   }
 
-  #backBtn {
-    margin-top: 0;
+  .btn-text {
+    display: none;
+  }
+
+  .mobile-icon {
+    display: inline-block;
+    font-size: 18px;
+    margin-right: 0;
   }
 }
