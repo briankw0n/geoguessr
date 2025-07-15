@@ -10,6 +10,11 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
 
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="styles.css" />
   </head>
 
@@ -26,10 +31,7 @@
 
       <div id="map"></div>
 
-      <img
-        id="flagImg"
-        alt="Country flag"
-      />
+      <img id="flagImg" alt="Country flag" />
 
       <div id="inputContainer">
         <input
@@ -38,8 +40,14 @@
           placeholder="Type your guess here"
           autocomplete="off"
         />
-        <button id="refreshBtn">Refresh</button>
-        <button id="backBtn">Back</button>
+        <button id="refreshBtn" title="Refresh">
+          <span class="material-symbols-outlined mobile-icon">refresh</span>
+          <span class="btn-text">Refresh</span>
+        </button>
+        <button id="backBtn" title="Back">
+          <span class="material-symbols-outlined mobile-icon">arrow_back</span>
+          <span class="btn-text">Back</span>
+        </button>
       </div>
 
       <div id="result"></div>
