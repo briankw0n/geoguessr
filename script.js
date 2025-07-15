@@ -1,350 +1,251 @@
-let map, highlightLayer, allBordersLayer;
-let countriesData = null;
-let capitalData = null;
-let flagData = null;
-let currentFeature = null;
-let currentCountry = "";
-let currentCapital = "";
-let currentCode = "";
-let wrongAttempts = 0;
-let currentMode = null;
-
-function initMap() {
-  map = L.map("map", {
-    center: [20, 0],
-    zoom: 2,
-    minZoom: 2,
-    maxZoom: 5,
-    attributionControl: false,
-  });
-
-  L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
-    {
-      maxZoom: 19,
-      subdomains: "abcd",
-      attribution:
-        '&copy; <a href="https://carto.com/attributions">CARTO</a> &copy; ' +
-        '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }
-  ).addTo(map);
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212;
+  color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-function drawAllBorders() {
-  if (allBordersLayer) {
-    map.removeLayer(allBordersLayer);
-  }
-
-  allBordersLayer = L.geoJSON(countriesData, {
-    style: {
-      color: "#888",
-      weight: 1,
-      fillOpacity: 0,
-    },
-  }).addTo(map);
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 400px;
 }
 
-function highlightCountry(feature) {
-  if (highlightLayer) {
-    map.removeLayer(highlightLayer);
-  }
-
-  highlightLayer = L.geoJSON(feature, {
-    style: {
-      color: "transparent",
-      weight: 0,
-      fillColor: "#ff4444",
-      fillOpacity: 0.7,
-    },
-  }).addTo(map);
-
-  map.fitBounds(highlightLayer.getBounds(), { maxZoom: 5 });
+#menu h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.625rem;
+  color: #eee;
+  text-align: center;
+  user-select: none;
 }
 
-function startCountryGame() {
-  document.body.classList.add("country-mode");
-  document.body.classList.remove("capital-mode");
+.menu-btn {
+  width: 100%;
+  padding: 0.9rem 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  background-color: #444;
+  color: #eee;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
 
-  const features = countriesData.features;
-  const randomIndex = Math.floor(Math.random() * features.length);
-  currentFeature = features[randomIndex];
-  currentCountry = currentFeature.properties.name;
-  wrongAttempts = 0;
+.menu-btn:hover {
+  background-color: #666;
+  box-shadow: 0 0 12px #aaa;
+}
 
-  document.getElementById("map").style.display = "block";
-  document.getElementById("flagImg").style.display = "none";
-  document.getElementById("prompt").textContent = "";
+.menu-btn:active {
+  background-color: #222;
+  box-shadow: none;
+}
 
-  highlightCountry(currentFeature);
+#app {
+  width: 100%;
+  max-width: 80%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
 
-  const resultEl = document.getElementById("result");
-  resultEl.textContent = "";
+#map {
+  width: 100%;
+  height: 1000px;
+  border: 2px solid #444;
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+}
 
-  const guessInput = document.getElementById("guessInput");
-  guessInput.value = "";
-  guessInput.disabled = false;
-  if (!isMobile()) {
-    guessInput.focus();
+#flagImg {
+  max-width: 100%;
+  height: auto;
+  max-height: 200px;
+  border: 2px solid #444;
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  display: none;
+}
+
+#prompt {
+  font-size: 1.3rem;
+  margin-bottom: 0.625rem;
+  user-select: none;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+#inputContainer {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 700px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+#guessInput {
+  height: 40px;
+  font-size: 1.1rem;
+  padding: 0 0.75rem;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  background-color: #222;
+  color: #eee;
+  flex-grow: 1;
+  min-width: 0;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease;
+}
+
+#guessInput:focus {
+  box-shadow: none;
+}
+
+#inputContainer button {
+  height: 40px;
+  min-width: 100px;
+  padding: 0 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #444;
+  color: #eee;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  white-space: nowrap;
+}
+
+#inputContainer button:hover {
+  background-color: #666;
+}
+
+#result {
+  font-size: 1.2rem;
+  min-height: 1.6em;
+  color: #ccc;
+  font-weight: 600;
+  user-select: none;
+  text-shadow: none;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+#backBtn {
+  padding: 0.6rem 1.25rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #444;
+  color: #eee;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+#backBtn:hover {
+  background-color: #666;
+  box-shadow: 0 0 12px #aaa;
+}
+
+#backBtn:active {
+  background-color: #222;
+  box-shadow: none;
+}
+
+@media (max-width: 1280px) {
+  #app {
+    width: 100%;
+    max-width: 50%;
+  }
+  
+  #map {
+    width: 100%;
+    height: 350px;
   }
 }
 
-function startCapitalGame() {
-  document.body.classList.add("capital-mode");
-  document.body.classList.remove("country-mode");
-
-  if (!capitalData || capitalData.length === 0) {
-    alert("Capital data is unavailable.");
-    return;
+@media (max-width: 480px) {
+  body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 10rem;
+    background-color: #121212;
+    color: #ddd;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    height: auto;
+    margin: 0;
+    overflow-y: auto;
+    min-height: 100%;
   }
 
-  const randomEntry =
-    capitalData[Math.floor(Math.random() * capitalData.length)];
-  currentCountry = randomEntry.country;
-  currentCapital = randomEntry.city;
-
-  wrongAttempts = 0;
-
-  document.getElementById("map").style.display = "none";
-  document.getElementById("flagImg").style.display = "none";
-
-  const promptEl = document.getElementById("prompt");
-  promptEl.textContent = `What is the capital of ${currentCountry}?`;
-
-  const resultEl = document.getElementById("result");
-  resultEl.textContent = "";
-
-  const guessInput = document.getElementById("guessInput");
-  guessInput.value = "";
-  guessInput.disabled = false;
-  if (!isMobile()) {
-    guessInput.focus();
-  }
-}
-
-function startFlagGame() {
-  document.body.classList.remove("country-mode");
-  document.body.classList.remove("capital-mode");
-
-  if (!flagData || flagData.length === 0) {
-    alert("Flag data not loaded.");
-    return;
+  #map {
+    height: 250px;
   }
 
-  const randomIndex = Math.floor(Math.random() * flagData.length);
-  const countryObj = flagData[randomIndex];
+  #menu h1 {
+    font-size: 2rem;
+  }
 
-  currentCountry = countryObj.country;
-  currentCode = countryObj.code.toLowerCase();
+  .menu-btn {
+    font-size: 1.2rem;
+    padding: 12px 0;
+  }
 
-  const flagUrl = `data/${currentCode}.svg`;
+  .country-mode #prompt {
+    margin-top: -2rem;
+  }
 
-  wrongAttempts = 0;
+  .capital-mode #prompt {
+    padding-top: 6rem;
+  }
 
-  document.getElementById("map").style.display = "none";
+  #prompt {
+    font-size: 1.2rem;
+  }
 
-  const flagImg = document.getElementById("flagImg");
-  flagImg.style.display = "block";
-  flagImg.src = flagUrl;
-  flagImg.alt = `Flag of ${currentCountry}`;
+  #inputContainer {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
 
-  document.getElementById("prompt").textContent = "";
-  document.getElementById("result").textContent = "";
+  #inputContainer button {
+    flex: 0 0 auto;
+    min-width: 70px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
 
-  const guessInput = document.getElementById("guessInput");
-  guessInput.value = "";
-  guessInput.disabled = false;
-  if (!isMobile()) {
-    guessInput.focus();
+  #guessInput {
+    font-size: 1rem;
+    height: 36px;
+  }
+
+  #backBtn {
+    margin-top: 0;
   }
 }
-
-function isMobile() {
-  return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
-}
-
-document.getElementById("guessInput").addEventListener("keydown", (e) => {
-  if (e.key !== "Enter") return;
-  e.preventDefault();
-
-  const guess = e.target.value.trim();
-  const resultEl = document.getElementById("result");
-
-  if (!guess) {
-    alert("Please enter a guess!");
-    return;
-  }
-
-  if (currentMode === "country") {
-    if (guess.toLowerCase() === currentCountry.toLowerCase()) {
-      resultEl.textContent = "✅ Correct!";
-      e.target.disabled = true;
-      setTimeout(startCountryGame, 1000);
-    } else {
-      wrongAttempts++;
-      const firstLetter = currentCountry.charAt(0);
-      const letterCount = currentCountry.length;
-
-      if (wrongAttempts === 1) {
-        resultEl.textContent = `❌ Hint: It starts with "${firstLetter}".`;
-      } else if (wrongAttempts === 2) {
-        resultEl.textContent = `❌ Hint: It starts with "${firstLetter}" and has ${letterCount} letters.`;
-      } else {
-        resultEl.textContent = `❌ The answer was: ${currentCountry}`;
-        e.target.disabled = true;
-        setTimeout(startCountryGame, 2000);
-      }
-
-      if (wrongAttempts < 3) {
-        e.target.value = "";
-        e.target.focus();
-      }
-    }
-  } else if (currentMode === "capital") {
-    if (!currentCapital) {
-      resultEl.textContent = "⚠️ Capital data not available for this country.";
-      return;
-    }
-
-    if (guess.toLowerCase() === currentCapital.toLowerCase()) {
-      resultEl.textContent = "✅ Correct!";
-      e.target.disabled = true;
-      setTimeout(startCapitalGame, 1000);
-    } else {
-      wrongAttempts++;
-      const firstLetter = currentCapital.charAt(0);
-      const letterCount = currentCapital.length;
-
-      if (wrongAttempts === 1) {
-        resultEl.textContent = `❌ Hint: It starts with "${firstLetter}".`;
-      } else if (wrongAttempts === 2) {
-        resultEl.textContent = `❌ Hint: It starts with "${firstLetter}" and has ${letterCount} letters.`;
-      } else {
-        resultEl.textContent = `❌ The answer was: ${currentCapital}`;
-        e.target.disabled = true;
-        setTimeout(startCapitalGame, 2000);
-      }
-
-      if (wrongAttempts < 3) {
-        e.target.value = "";
-        e.target.focus();
-      }
-    }
-  } else if (currentMode === "flag") {
-    if (guess.toLowerCase() === currentCountry.toLowerCase()) {
-      resultEl.textContent = "✅ Correct!";
-      e.target.disabled = true;
-      setTimeout(startFlagGame, 1000);
-    } else {
-      wrongAttempts++;
-      const firstLetter = currentCountry.charAt(0);
-      const letterCount = currentCountry.length;
-
-      if (wrongAttempts === 1) {
-        resultEl.textContent = `❌ Hint: It starts with "${firstLetter}".`;
-      } else if (wrongAttempts === 2) {
-        resultEl.textContent = `❌ Hint: It starts with "${firstLetter}" and has ${letterCount} letters.`;
-      } else {
-        resultEl.textContent = `❌ The answer was: ${currentCountry}`;
-        e.target.disabled = true;
-        setTimeout(startFlagGame, 2000);
-      }
-
-      if (wrongAttempts < 3) {
-        e.target.value = "";
-        e.target.focus();
-      }
-    }
-  }
-});
-
-document.getElementById("modeCountry").addEventListener("click", () => {
-  currentMode = "country";
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("app").style.display = "flex";
-
-  if (!map) {
-    initMap();
-  }
-
-  fetch("country.json")
-    .then((res) => res.json())
-    .then((data) => {
-      countriesData = data;
-      drawAllBorders();
-      startCountryGame();
-    })
-    .catch((err) => {
-      alert("Failed to load country data.");
-      console.error("GeoJSON load error:", err);
-    });
-});
-
-document.getElementById("modeCapital").addEventListener("click", () => {
-  currentMode = "capital";
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("app").style.display = "flex";
-
-  fetch("capital.json")
-    .then((res) => res.json())
-    .then((data) => {
-      capitalData = data;
-      startCapitalGame();
-    })
-    .catch((err) => {
-      alert("Failed to load capital data.");
-      console.error("Capital JSON load error:", err);
-    });
-});
-
-document.getElementById("modeFlag").addEventListener("click", () => {
-  currentMode = "flag";
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("app").style.display = "flex";
-
-  fetch("flag_extracted.json")
-    .then((res) => res.json())
-    .then((data) => {
-      flagData = data;
-      startFlagGame();
-    })
-    .catch((err) => {
-      alert("Failed to load flag data.");
-      console.error(err);
-    });
-});
-
-document.getElementById("backBtn").addEventListener("click", () => {
-  document.getElementById("app").style.display = "none";
-
-  document.getElementById("menu").style.display = "flex";
-
-  const guessInput = document.getElementById("guessInput");
-  guessInput.value = "";
-  guessInput.disabled = false;
-
-  document.getElementById("result").textContent = "";
-  document.getElementById("prompt").textContent = "";
-  document.getElementById("flagImg").style.display = "none";
-  document.getElementById("map").style.display = "none";
-
-  currentMode = null;
-  wrongAttempts = 0;
-});
-
-document.getElementById("refreshBtn").addEventListener("click", () => {
-  if (!currentMode || !countriesData) return;
-
-  switch (currentMode) {
-    case "country":
-      startCountryGame();
-      break;
-    case "capital":
-      startCapitalGame();
-      break;
-    case "flag":
-      startFlagGame();
-      break;
-  }
-});
