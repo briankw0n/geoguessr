@@ -265,7 +265,7 @@ body {
 
   #prompt {
     font-size: 1.2rem;
-    width: 400px;
+    width: 350px;
   }
 
   #inputContainer {
@@ -294,3 +294,4 @@ body {
     font-size: 18px;
     margin-right: 0;
   }
+}
